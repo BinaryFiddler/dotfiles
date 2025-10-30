@@ -1,0 +1,48 @@
+# core + shell
+zsh
+git
+neovim
+tmux
+fzf
+ripgrep
+fd
+bat
+htop
+tree
+wget
+curl
+jq
+yq
+gnupg
+make
+cmake
+pkgconf
+openssl
+readline
+xz
+zlib
+sqlite
+ca-certificates
+base-devel
+github-cli
+just
+zoxide
+direnv
+starship
+zip
+unzip
+
+# containers & k8s
+docker
+docker-buildx
+docker-compose
+kubectl
+k9s
+helm
+kubectx
+
+# golang (asdf will manage versions but go useful for some builds)
+go
+
+# fonts
+ttf-jetbrains-mono

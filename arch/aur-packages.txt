@@ -1,0 +1,6 @@
+asdf-vm
+ttf-jetbrains-mono-nerd
+# Optional GUI/dev extras:
+visual-studio-code-bin
+1password
+# google-chrome

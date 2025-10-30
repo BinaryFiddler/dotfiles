@@ -1,0 +1,62 @@
+# Core CLI
+brew "git"
+brew "zsh"
+brew "neovim"
+brew "tmux"
+brew "fzf"
+brew "ripgrep"
+brew "fd"
+brew "bat"
+brew "htop"
+brew "wget"
+brew "gnupg"
+brew "tldr"
+brew "tree"
+brew "jq"
+brew "yq"
+brew "coreutils"
+brew "findutils"
+brew "gawk"
+brew "unzip"
+
+# QoL
+brew "zoxide"
+brew "direnv"
+brew "starship"   # optional prompt
+
+# Containers & K8s
+brew "docker"
+cask "docker"
+brew "kubectl"
+brew "k9s"
+brew "helm"
+brew "kind"
+brew "kubectx"
+
+# IaC / Cloud
+brew "terraform"
+brew "awscli"
+
+# asdf + build deps for Python
+brew "asdf"
+brew "openssl@3"
+brew "readline"
+brew "xz"
+brew "zlib"
+brew "sqlite"
+
+# Dev tools
+brew "git-delta"
+brew "tokei"
+brew "pre-commit"
+brew "just"
+brew "gh"
+brew "cmake"
+brew "pkg-config"
+
+# Apps
+cask "iterm2"
+cask "visual-studio-code"
+
+# Fonts
+cask "font-jetbrains-mono-nerd-font"
