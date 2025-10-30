@@ -156,7 +156,12 @@ asdf_init() {
   # NodeJS keyring (first-time only)
   bash -c '${ASDF_DATA_DIR:=$HOME/.asdf}/plugins/nodejs/bin/import-release-team-keyring' || true
 
-  # Install from ~/.tool-versions if present
+  # Install from .tool-versions in repo if present
+  if [ -f "$REPO/.tool-versions" ]; then
+    blue "Copying .tool-versions from repo to $HOME"
+    cp "$REPO/.tool-versions" "$HOME/.tool-versions"
+  fi
+  
   if [ -f "$HOME/.tool-versions" ]; then
     blue "asdf install (from ~/.tool-versions)"
     asdf install
