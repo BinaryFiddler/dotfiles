@@ -152,6 +152,7 @@ asdf_init() {
   add python    https://github.com/asdf-community/asdf-python.git
   add rust      https://github.com/asdf-community/asdf-rust.git
   add golang    https://github.com/asdf-community/asdf-golang.git
+  add ruby      https://github.com/asdf-vm/asdf-ruby.git
 
   # NodeJS keyring (first-time only)
   bash -c '${ASDF_DATA_DIR:=$HOME/.asdf}/plugins/nodejs/bin/import-release-team-keyring' || true
