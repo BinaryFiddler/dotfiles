@@ -112,6 +112,7 @@ link_dotfiles() {
   blue "Linking .zshrc"
   ln -sf "$REPO/zsh/.zshrc" "$HOME/.zshrc"
   ln -sf "$REPO/.gitconfig" "$HOME/.gitconfig"
+  ln -sf "$REPO/zsh/starship.toml" "$HOME/.config/starship.toml"
 }
 
 ensure_default_shell_zsh() {

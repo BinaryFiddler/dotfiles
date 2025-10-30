@@ -12,8 +12,9 @@ export ZSH="$HOME/.oh-my-zsh"
 # Keep your custom plugins/themes in your repo:
 export ZSH_CUSTOM="$HOME/dotfiles/zsh/zsh_custom"
 
+# disable OMZ themes; Starship handles the prompt
 # Theme: Powerlevel10k
-ZSH_THEME="powerlevel10k/powerlevel10k"
+# ZSH_THEME="powerlevel10k/powerlevel10k"
 
 # Plugins (add external ones to $ZSH_CUSTOM/plugins/)
 plugins=(
@@ -79,10 +80,13 @@ if command -v brew >/dev/null 2>&1 && [ -d "$(brew --prefix postgresql@13 2>/dev
   export PATH="$(brew --prefix postgresql@13)/bin:$PATH"
 fi
 
-#### ─────────────────────────────────────────────────────────────────────
-#### Powerlevel10k config (leave at bottom)
-#### ─────────────────────────────────────────────────────────────────────
-[[ -r "$HOME/.p10k.zsh" ]] && source "$HOME/.p10k.zsh"
+# Use starship for prompt management
+eval "$(starship init zsh)"
 
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+# #### ─────────────────────────────────────────────────────────────────────
+# #### Powerlevel10k config (leave at bottom)
+# #### ─────────────────────────────────────────────────────────────────────
+# [[ -r "$HOME/.p10k.zsh" ]] && source "$HOME/.p10k.zsh"
+
+# # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+# [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
