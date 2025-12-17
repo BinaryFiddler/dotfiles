@@ -17,15 +17,25 @@ export ZSH_CUSTOM="$HOME/dotfiles/zsh/zsh_custom"
 # ZSH_THEME="powerlevel10k/powerlevel10k"
 
 # Plugins (add external ones to $ZSH_CUSTOM/plugins/)
-plugins=(
-  git
-  kubectl
-  poetry
-  tldr
-  fzf
-  zsh-autosuggestions
-  zsh-syntax-highlighting
-)
+# On Linux, zsh-autosuggestions and zsh-syntax-highlighting are loaded separately below
+if [[ "$OSTYPE" == darwin* ]]; then
+  plugins=(
+    git
+    kubectl
+    poetry
+    tldr
+    fzf
+    zsh-autosuggestions
+    zsh-syntax-highlighting
+  )
+else
+  plugins=(
+    git
+    kubectl
+    poetry
+    tldr
+  )
+fi
 
 source "$ZSH/oh-my-zsh.sh"
 
@@ -73,6 +83,14 @@ if command -v brew >/dev/null 2>&1 && [ -d "$(brew --prefix)/opt/fzf" ]; then
   source "$(brew --prefix)/opt/fzf/shell/key-bindings.zsh"
 elif [ -f "/usr/share/fzf/key-bindings.zsh" ]; then
   source "/usr/share/fzf/key-bindings.zsh"
+elif [ -f "/usr/share/doc/fzf/examples/key-bindings.zsh" ]; then
+  source "/usr/share/doc/fzf/examples/key-bindings.zsh"
+fi
+
+# On Linux, source system-installed zsh plugins if available
+if [[ "$OSTYPE" != darwin* ]]; then
+  [ -f /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh ] && source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+  [ -f /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ] && source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 fi
 
 # (Optional) Postgres 13 path on macOS if installed via Homebrew
@@ -81,7 +99,9 @@ if command -v brew >/dev/null 2>&1 && [ -d "$(brew --prefix postgresql@13 2>/dev
 fi
 
 # Use starship for prompt management
-eval "$(starship init zsh)"
+if command -v starship >/dev/null 2>&1; then
+  eval "$(starship init zsh)"
+fi
 
 # #### ─────────────────────────────────────────────────────────────────────
 # #### Powerlevel10k config (leave at bottom)

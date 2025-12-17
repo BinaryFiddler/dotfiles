@@ -13,7 +13,7 @@ detect_os() {
       if [ -r /etc/os-release ]; then
         . /etc/os-release
         case "${ID:-}${ID_LIKE:-}" in
-          *arch*) echo "arch" ;;
+          *ubuntu*|*debian*) echo "ubuntu" ;;
           *)      echo "linux" ;;
         esac
       else
@@ -58,38 +58,60 @@ run_macos_defaults() {
   fi
 }
 
-# ---------- Arch Linux ----------
-pacman_sync() {
-  blue "Sync pacman db & full upgrade"
-  sudo pacman -Syu --noconfirm
+# ---------- Ubuntu/Debian ----------
+apt_update_upgrade() {
+  blue "Updating apt cache & upgrading packages"
+  sudo apt update
+  sudo apt upgrade -y
 }
 
-ensure_build_tools_arch() {
-  blue "Ensuring base-devel, git, curl, certs"
-  sudo pacman -S --needed --noconfirm base-devel git curl ca-certificates
+ensure_build_tools_ubuntu() {
+  blue "Ensuring build-essential, git, curl, certs"
+  sudo apt install -y build-essential git curl ca-certificates
 }
 
-pacman_install_list() {
+apt_install_list() {
   local list_file="$1"
   [ -f "$list_file" ] || return 0
-  blue "Installing pacman packages: $(basename "$list_file")"
-  sudo pacman -S --needed --noconfirm $(grep -vE '^\s*#' "$list_file" | tr '\n' ' ')
+  blue "Installing apt packages: $(basename "$list_file")"
+  sudo apt install -y $(grep -vE '^\s*#' "$list_file" | tr '\n' ' ')
 }
 
-ensure_yay() {
-  if has yay; then return 0; fi
-  blue "Installing yay (AUR helper)"
-  tmp="$(mktemp -d)"; trap 'rm -rf "$tmp"' EXIT
-  git -C "$tmp" clone https://aur.archlinux.org/yay-bin.git
-  ( cd "$tmp/yay-bin" && makepkg -si --noconfirm )
+ensure_snap() {
+  if has snap; then return 0; fi
+  blue "Installing snapd"
+  sudo apt install -y snapd
 }
 
-aur_install_list() {
+snap_install_list() {
   local list_file="$1"
   [ -f "$list_file" ] || return 0
-  ensure_yay
-  blue "Installing AUR packages: $(basename "$list_file")"
-  yay -S --needed --noconfirm $(grep -vE '^\s*#' "$list_file" | tr '\n' ' ')
+  ensure_snap
+  blue "Installing snap packages: $(basename "$list_file")"
+  while IFS= read -r line; do
+    [[ "$line" =~ ^\s*# ]] || [[ -z "$line" ]] && continue
+    sudo snap install $line
+  done < "$list_file"
+}
+
+install_starship_ubuntu() {
+  if ! has starship; then
+    blue "Installing starship prompt"
+    curl -sS https://starship.rs/install.sh | sh -s -- -y
+  fi
+}
+
+install_nerd_font_ubuntu() {
+  local font_dir="$HOME/.local/share/fonts"
+  if [ ! -f "$font_dir/FiraCodeNerdFont-Regular.ttf" ]; then
+    blue "Installing FiraCode Nerd Font"
+    mkdir -p "$font_dir"
+    local tmp; tmp="$(mktemp -d)"
+    curl -fLo "$tmp/FiraCode.zip" https://github.com/ryanoasis/nerd-fonts/releases/latest/download/FiraCode.zip
+    unzip -q "$tmp/FiraCode.zip" -d "$font_dir"
+    rm -rf "$tmp"
+    fc-cache -fv
+  fi
 }
 
 # ---------- Shared ----------
@@ -112,6 +134,8 @@ link_dotfiles() {
   blue "Linking .zshrc"
   ln -sf "$REPO/zsh/.zshrc" "$HOME/.zshrc"
   ln -sf "$REPO/.gitconfig" "$HOME/.gitconfig"
+  
+  mkdir -p "$HOME/.config"
   ln -sf "$REPO/zsh/starship.toml" "$HOME/.config/starship.toml"
 }
 
@@ -182,11 +206,13 @@ main() {
       brew_bundle_if "$REPO/Brewfile.macos"
       run_macos_defaults
       ;;
-    arch)
-      pacman_sync
-      ensure_build_tools_arch
-      pacman_install_list "$REPO/arch/pacman-packages.txt"
-      aur_install_list    "$REPO/arch/aur-packages.txt"
+    ubuntu)
+      apt_update_upgrade
+      ensure_build_tools_ubuntu
+      apt_install_list "$REPO/ubuntu/apt-packages.txt"
+      snap_install_list "$REPO/ubuntu/snap-packages.txt"
+      install_starship_ubuntu
+      install_nerd_font_ubuntu
       ;;
     *) echo "Unsupported/untested OS for this script."; exit 1 ;;
   esac

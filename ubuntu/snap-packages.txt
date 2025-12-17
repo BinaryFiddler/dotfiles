@@ -1,0 +1,4 @@
+# Add snap packages here (one per line)
+# Example:
+# --classic code
+# --classic node
